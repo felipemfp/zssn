@@ -12,3 +12,10 @@ export const postPerson = ({name, age, lonlat, items, gender}) => {
 
   return axios.post(`${API_URL}/api/people.json`, {person, items})
 }
+
+
+export const patchPerson = (personId, {name, age, lonlat, gender}) => {
+  const person = {name, age, lonlat, gender}
+
+  return axios.patch(`${API_URL}/api/people/${personId}.json`, {person})
+}

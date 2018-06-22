@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Marker, Circle } from 'react-google-maps'
+import { Marker, InfoWindow } from 'react-google-maps'
+import { ToastContainer, toast } from 'react-toastify'
 import * as lonlatUtils from 'utils/lonlatUtils'
+import * as api from 'api'
+import { Link } from 'react-router-dom'
 
 import { PeopleContext } from 'contexts'
 
 import GoogleMap from 'components/GoogleMap'
+import PersonMarker from 'components/PersonMarker'
 
-import BonfireIcon from 'assets/bonfire.png'
-import SkullIcon from 'assets/skull.png'
+import { Loader, Icon, Header, Divider } from 'semantic-ui-react'
+
+import InventorySection from './InventorySection'
+import ActionsSection from './ActionsSection'
+import ReportsSection from './ReportsSection'
 
 const Container = styled.div`
   height: 100vh;
@@ -19,6 +26,7 @@ const Container = styled.div`
 
 const Panel = styled.section`
   width: 40rem;
+  padding: 1rem;
 `
 
 const MapContainer = styled.section`
@@ -27,24 +35,134 @@ const MapContainer = styled.section`
 `
 
 export default class DashboardPage extends Component {
-  render() {
+
+  state = {
+    loading: true,
+    openInfoWindow: {}
+  }
+
+  fetchSurvivor = () => {
     const { match: { params: { survivorId }} } = this.props
+
+    this.setState(() => ({ loading: true }))
+    Promise.all([api.getPerson(survivorId), api.getPersonProperties(survivorId)])
+      .then(([{data: person}, {data: properties}]) => {
+        const inventory = properties.reduce((items, property) => {
+          items[property.item.name.toLowerCase()] = property.quantity
+          return items
+        }, {
+          water: 0,
+          food: 0,
+          medication: 0,
+          ammunition: 0
+        })
+
+        this.setState(() => ({
+          loading: false,
+          survivor: person,
+          inventory
+        }))
+      })
+  }
+
+  handleDragEnd = ({latLng}) => {
+    const lat = latLng.lat()
+    const lng = latLng.lng()
+
+    const lonlat = lonlatUtils.toString({lat, lng})
+
+    this.setState(({survivor}) => ({
+      survivor: {
+        ...survivor,
+        lonlat
+      }
+    }), () => {
+      const { survivor } = this.state
+
+      api.patchPerson(survivor.id, survivor).then(response => {
+        toast.success('Current location successfully updated.')
+      })
+    })
+  }
+
+  handleToggleInfoWindow = (key) => () => {
+    this.setState(({openInfoWindow}) => ({
+      openInfoWindow: {
+        ...openInfoWindow,
+        [key]: !openInfoWindow[key]
+      }
+    }))
+  }
+
+  componentDidMount = () => {
+    this.fetchSurvivor()
+  }
+
+  render() {
+    const { loading } = this.state
+
+    if (loading) {
+      return (
+        <Loader active size="massive" />
+      )
+    }
+
+    const { survivor, openInfoWindow } = this.state
+
+    const position = survivor.lonlat
+      ? lonlatUtils.fromString(survivor.lonlat)
+      : {
+        lat: -5.779257,
+        lng: -35.200916
+      }
+
+    const defaultZoom = survivor.lonlat
+      ? 17
+      : 10
 
     return (
       <PeopleContext.Consumer>
         {({people, healthy, infected}) => (
           <Container>
+            <ToastContainer autoClose={3000} />
             <Panel>
-              <h1>{survivorId}'s Dashboard</h1>
+              <Header as="h2">
+                <Link className="ui right floated button" to="/"><Icon name="power off" />Exit</Link>
+                {survivor.name}
+                <Header.Subheader>{`${survivor.age} years old`}</Header.Subheader>
+              </Header>
+              <Divider />
+              <InventorySection items={this.state.inventory} />
+              <Divider />
+              <ActionsSection />
+              <Divider />
+              <ReportsSection />
             </Panel>
             <MapContainer>
-              <GoogleMap>
-                {healthy.map(idx => people[idx].lonlat && <Marker key={idx} icon={BonfireIcon} position={lonlatUtils.fromString(people[idx].lonlat)} />)}
+              <GoogleMap defaultCenter={position} defaultZoom={defaultZoom}>
+                <Marker defaultPosition={position} draggable={true} onDragEnd={this.handleDragEnd}>
+                  <InfoWindow><span>Drag to update current location</span></InfoWindow>
+                </Marker>
+
+                {healthy.map(idx => (people[idx].id !== survivor.id && people[idx].lonlat) && (
+                  <PersonMarker
+                    key={idx}
+                    person={people[idx]}
+                    position={lonlatUtils.fromString(people[idx].lonlat)}
+                    infoWindowOpen={openInfoWindow[people[idx].id]}
+                    onToggle={this.handleToggleInfoWindow(people[idx].id)}
+                  />
+                ))}
+
                 {infected.map(idx => people[idx].lonlat && (
-                  <React.Fragment key={idx}>
-                    <Circle center={lonlatUtils.fromString(people[idx].lonlat)} options={{fillColor: '#ff0000', fillOpacity: 0.3, strokeWeight: 0}} radius={1000} />
-                    <Marker icon={SkullIcon} position={lonlatUtils.fromString(people[idx].lonlat)} />
-                  </React.Fragment>
+                  <PersonMarker
+                    key={idx}
+                    person={people[idx]}
+                    position={lonlatUtils.fromString(people[idx].lonlat)}
+                    infected={true}
+                    infoWindowOpen={openInfoWindow[people[idx].id]}
+                    onToggle={this.handleToggleInfoWindow(people[idx].id)}
+                  />
                 ))}
               </GoogleMap>
             </MapContainer>

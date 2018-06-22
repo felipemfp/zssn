@@ -19,6 +19,7 @@ export default compose(
       defaultZoom={props.defaultZoom || 8}
       defaultCenter={props.defaultCenter || { lat: -34.397, lng: 150.644 }}
       defaultOptions={{styles: mapStyles}}
+      {...props}
     >
       {props.children}
     </GoogleMap>

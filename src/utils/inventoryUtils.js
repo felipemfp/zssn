@@ -5,6 +5,17 @@ const ITEMS_KEY = {
   ammunition: 'Ammunition'
 }
 
+const ITEMS_POINT = {
+  water: 4,
+  food: 3,
+  medication: 2,
+  ammunition: 1
+}
+
+export const calculatePoints = (items) => {
+  return  Object.keys(items).reduce((sum, key) => sum + (items[key] * ITEMS_POINT[key]), 0)
+}
+
 export const toString = (items) => {
   return Object.keys(items).map(key => ITEMS_KEY[key] && `${ITEMS_KEY[key]}:${items[key]}`).join(';')
 }
