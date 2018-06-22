@@ -11,7 +11,7 @@ export default class AppContainer extends Component {
     infected: []
   }
 
-  componentDidMount = () => {
+  fetchPeople = () => {
     api.getPeople().then(({ data }) => {
       const people = data.map(person => ({
         ...person,
@@ -37,11 +37,15 @@ export default class AppContainer extends Component {
     })
   }
 
+  componentDidMount = () => {
+    this.fetchPeople()
+  }
+
   render() {
     const { people, healthy, infected } = this.state
 
     return (
-      <PeopleContext.Provider value={{people, healthy, infected}}>
+      <PeopleContext.Provider value={{people, healthy, infected, refetch: this.fetchPeople}}>
         {this.props.children}
       </PeopleContext.Provider>
     )

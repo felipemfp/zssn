@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Redirect, Route } from 'react-router-d
 import AppContainer from 'containers/AppContainer'
 
 import WelcomePage from 'pages/WelcomePage'
+import RegisterPage from 'pages/RegisterPage'
 import DashboardPage from 'pages/DashboardPage'
 
 class Root extends Component {
@@ -13,6 +14,7 @@ class Root extends Component {
         <AppContainer>
           <Switch>
             <Route path="/welcome" component={WelcomePage} />
+            <Route path="/register" component={RegisterPage} />
             <Route path="/dashboard/:survivorId" component={DashboardPage} />
             <Redirect to="/welcome" />
           </Switch>

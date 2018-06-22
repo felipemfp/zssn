@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Segment, Dropdown, Header } from 'semantic-ui-react'
-import { Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { PeopleContext } from 'contexts'
 
@@ -18,12 +18,16 @@ const Panel = styled(Segment)`
   width: 30rem;
 `
 
+const ActionSection = styled.section`
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+`
+
 export default class WelcomePage extends Component {
   state = {}
 
   handleChange = (evt, {value}) => {
-    evt.stopPropagation()
-
     this.setState(() => ({
       survivorId: value
     }))
@@ -31,10 +35,6 @@ export default class WelcomePage extends Component {
 
   render() {
     const { survivorId } = this.state
-
-    if (survivorId) {
-      return <Redirect push={true} to={`/dashboard/${survivorId}`} />
-    }
 
     return (
       <Container>
@@ -60,6 +60,11 @@ export default class WelcomePage extends Component {
               />
             )}
           </PeopleContext.Consumer>
+
+          <ActionSection>
+            <Link to="/register" className="ui big button">Not listed?</Link>
+            <Link to={`/dashboard/${survivorId}`} className={`ui big primary button ${!survivorId && 'disabled'}`}>Enter</Link>
+          </ActionSection>
         </Panel>
       </Container>
     )

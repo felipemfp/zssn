@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Marker, Circle } from 'react-google-maps'
+import * as lonlatUtils from 'utils/lonlatUtils'
 
 import { PeopleContext } from 'contexts'
 
@@ -25,18 +26,6 @@ const MapContainer = styled.section`
   width: 100%;
 `
 
-const parseLonLat = (lonlat) => {
-  const start = lonlat.indexOf('(') + 1
-  const end = lonlat.indexOf(')')
-
-  const values = lonlat.slice(start, end).split(' ')
-
-  return {
-    lng: Number(values[0]),
-    lat: Number(values[1]),
-  }
-}
-
 export default class DashboardPage extends Component {
   render() {
     const { match: { params: { survivorId }} } = this.props
@@ -50,11 +39,11 @@ export default class DashboardPage extends Component {
             </Panel>
             <MapContainer>
               <GoogleMap>
-                {healthy.map(idx => people[idx].lonlat && <Marker key={idx} icon={BonfireIcon} position={parseLonLat(people[idx].lonlat)} />)}
+                {healthy.map(idx => people[idx].lonlat && <Marker key={idx} icon={BonfireIcon} position={lonlatUtils.fromString(people[idx].lonlat)} />)}
                 {infected.map(idx => people[idx].lonlat && (
                   <React.Fragment key={idx}>
-                    <Circle center={parseLonLat(people[idx].lonlat)} options={{fillColor: '#ff0000', fillOpacity: 0.3, strokeWeight: 0}} radius={1000} />
-                    <Marker icon={SkullIcon} position={parseLonLat(people[idx].lonlat)} />
+                    <Circle center={lonlatUtils.fromString(people[idx].lonlat)} options={{fillColor: '#ff0000', fillOpacity: 0.3, strokeWeight: 0}} radius={1000} />
+                    <Marker icon={SkullIcon} position={lonlatUtils.fromString(people[idx].lonlat)} />
                   </React.Fragment>
                 ))}
               </GoogleMap>
