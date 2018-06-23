@@ -7,6 +7,7 @@ import * as api from 'api'
 export default class FlagAnInfectedModal extends Component {
   state = {
     open: false,
+    opening: false,
     infectedId: null
   }
 
@@ -30,18 +31,21 @@ export default class FlagAnInfectedModal extends Component {
     })
   }
 
-  onCancel = () => this.setState(() => ({
+  handleOpen = () => this.setState(() => ({
+    open: true,
+    opening: true
+  }), () => {
+    setTimeout(() => this.setState(() => ({ opening: false })), 300)
+  })
+
+  handleClose = () => this.setState(() => ({
     open: false,
-    survivorId: null
+    infectedId: null
   }))
-
-  handleOpen = () => this.setState(() => ({ open: true }))
-
-  handleClose = () => this.setState(() => ({ open: false }))
 
   render() {
     const { render } = this.props
-    const { infectedId, open } = this.state
+    const { infectedId, open, opening } = this.state
 
     return (
       <PeopleContext.Consumer>
@@ -55,8 +59,8 @@ export default class FlagAnInfectedModal extends Component {
                 fluid
                 search
                 selection
-                loading={people.length === 0}
-                options={healthy.map(idx => ({
+                loading={opening || people.length === 0}
+                options={opening ? [] : healthy.map(idx => ({
                   key: people[idx].id,
                   text: people[idx].name,
                   value: people[idx].id,
@@ -67,7 +71,7 @@ export default class FlagAnInfectedModal extends Component {
               />
             </Modal.Content>
             <Modal.Actions>
-              <Button negative onClick={this.onCancel}>Cancel</Button>
+              <Button negative onClick={this.handleClose}>Cancel</Button>
               <Button disabled={!infectedId} positive icon="checkmark" labelPosition="right" content="Flag" onClick={this.onSubmit(refetch)} />
             </Modal.Actions>
           </Modal>
