@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Marker } from 'react-google-maps'
 
 import * as lonlatUtils from 'utils/lonlatUtils'
+import { NATAL_LAT_LNG } from 'utils/constants'
 import GoogleMap from 'components/GoogleMap'
 
 export default class LocationStep extends Component {
@@ -16,16 +17,10 @@ export default class LocationStep extends Component {
 
   render() {
     const { location } = this.props
-    let defaultZoom = 10
-    let position = {
-      lat: -5.779257,
-      lng: -35.200916
-    }
-
-    if (location) {
-      defaultZoom = 17
-      position = lonlatUtils.fromString(this.props.location)
-    }
+    const defaultZoom = location ? 15 : 10
+    const position = location
+      ? lonlatUtils.fromString(this.props.location)
+      : NATAL_LAT_LNG
 
     return (
       <div style={{height: '300px'}}>

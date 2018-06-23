@@ -17,6 +17,8 @@ import InventorySection from './InventorySection'
 import ActionsSection from './ActionsSection'
 import ReportsSection from './ReportsSection'
 
+import { NATAL_LAT_LNG } from 'utils/constants'
+
 const Container = styled.div`
   height: 100vh;
   width: 100%;
@@ -111,13 +113,10 @@ export default class DashboardPage extends Component {
 
     const position = survivor.lonlat
       ? lonlatUtils.fromString(survivor.lonlat)
-      : {
-        lat: -5.779257,
-        lng: -35.200916
-      }
+      : NATAL_LAT_LNG
 
     const defaultZoom = survivor.lonlat
-      ? 17
+      ? 15
       : 10
 
     return (
