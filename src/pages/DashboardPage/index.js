@@ -4,7 +4,6 @@ import { Marker, InfoWindow } from 'react-google-maps'
 import { ToastContainer, toast } from 'react-toastify'
 import * as lonlatUtils from 'utils/lonlatUtils'
 import * as api from 'api'
-import { Link } from 'react-router-dom'
 
 import { PeopleContext } from 'contexts'
 
@@ -128,7 +127,7 @@ export default class DashboardPage extends Component {
             <Panel>
               <Header as="h2">
                 <ExitButton onClick={refetch} render={(onClick) => (
-                  <Button floated="right" onClick={onClick}><Icon name="power off" />Exit</Button>
+                  <Button floated="right" basic onClick={onClick}><Icon name="power off" />Exit</Button>
                 )} />
                 {survivor.name}
                 <Header.Subheader>{`${survivor.age} years old`}</Header.Subheader>
