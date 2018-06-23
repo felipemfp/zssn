@@ -15,9 +15,9 @@ export default class ReportsSection extends Component {
       api.getReportAboutPeopleInventory(),
       api.getReportAboutInfected()
     ]).then(([
-      {data: { report: infectedPointsReport}},
-      {data: { report: peopleInventoryReport}},
-      {data: { report: infectedReport}}
+      {data: { report: infectedPointsReport }},
+      {data: { report: peopleInventoryReport }},
+      {data: { report: infectedReport }}
     ]) => {
       this.setState(() => ({
         loading: false,
@@ -39,10 +39,10 @@ export default class ReportsSection extends Component {
       infectedPointsReport
     } = this.state
 
-    const infected = Math.round(infectedReport['average_infected'] * 10000) / 10000
+    const infected = Math.round(infectedReport['average_infected'] * 10000) / 100
     const chartData = [
-      {name: 'Healthy', value: (1 - infected) * 100},
-      {name: 'Infected', value: infected * 100}
+      {name: 'Healthy', value: 100 - infected},
+      {name: 'Infected', value: infected}
     ]
 
     return (
