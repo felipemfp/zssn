@@ -135,7 +135,7 @@ export default class DashboardPage extends Component {
               <Divider />
               <InventorySection items={this.state.inventory} />
               <Divider />
-              <ActionsSection />
+              <ActionsSection survivor={survivor} />
               <Divider />
               <ReportsSection />
             </Panel>
