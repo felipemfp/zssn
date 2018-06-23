@@ -4,18 +4,20 @@ import { Marker, InfoWindow } from 'react-google-maps'
 import { ToastContainer, toast } from 'react-toastify'
 import * as lonlatUtils from 'utils/lonlatUtils'
 import * as api from 'api'
-import { Link } from 'react-router-dom'
 
 import { PeopleContext } from 'contexts'
 
 import GoogleMap from 'components/GoogleMap'
 import PersonMarker from 'components/PersonMarker'
 
-import { Loader, Icon, Header, Divider } from 'semantic-ui-react'
+import { Loader, Icon, Header, Divider, Button } from 'semantic-ui-react'
 
 import InventorySection from './InventorySection'
 import ActionsSection from './ActionsSection'
 import ReportsSection from './ReportsSection'
+import ExitButton from 'components/ExitButton'
+
+import { NATAL_LAT_LNG } from 'utils/constants'
 
 const Container = styled.div`
   height: 100vh;
@@ -111,23 +113,22 @@ export default class DashboardPage extends Component {
 
     const position = survivor.lonlat
       ? lonlatUtils.fromString(survivor.lonlat)
-      : {
-        lat: -5.779257,
-        lng: -35.200916
-      }
+      : NATAL_LAT_LNG
 
     const defaultZoom = survivor.lonlat
-      ? 17
+      ? 15
       : 10
 
     return (
       <PeopleContext.Consumer>
-        {({people, healthy, infected}) => (
+        {({people, healthy, infected, refetch}) => (
           <Container>
             <ToastContainer autoClose={3000} />
             <Panel>
               <Header as="h2">
-                <Link className="ui right floated button" to="/"><Icon name="power off" />Exit</Link>
+                <ExitButton onClick={refetch} render={(onClick) => (
+                  <Button floated="right" basic onClick={onClick}><Icon name="power off" />Exit</Button>
+                )} />
                 {survivor.name}
                 <Header.Subheader>{`${survivor.age} years old`}</Header.Subheader>
               </Header>
