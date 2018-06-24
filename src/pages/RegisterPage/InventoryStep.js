@@ -4,8 +4,8 @@ import * as inventoryUtils from 'utils/inventoryUtils'
 
 const Item = (props) => (
   <List.Item>
-    <List.Content floated="right">
-      <Input value={props.value} onChange={props.onChange} type="number" size="large" />
+    <List.Content floated="right" style={{width: '40%'}}>
+      <Input fluid value={props.value} onChange={props.onChange} type="number" size="large" />
     </List.Content>
     <List.Icon name={props.icon} size='large' verticalAlign='middle' />
     <List.Content>

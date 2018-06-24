@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Marker } from 'react-google-maps'
+import { Marker, InfoWindow } from 'react-google-maps'
 
 import * as lonlatUtils from 'utils/lonlatUtils'
 import { NATAL_LAT_LNG } from 'utils/constants'
@@ -25,7 +25,11 @@ export default class LocationStep extends Component {
     return (
       <div style={{height: '300px'}}>
         <GoogleMap defaultCenter={position} defaultZoom={defaultZoom}>
-          <Marker defaultPosition={position} draggable={true} onDragEnd={this.handleDragEnd} />
+          <Marker defaultPosition={position} draggable={true} onDragEnd={this.handleDragEnd}>
+            <InfoWindow>
+              <span>Drag to update current location</span>
+            </InfoWindow>
+          </Marker>
         </GoogleMap>
       </div>
     )

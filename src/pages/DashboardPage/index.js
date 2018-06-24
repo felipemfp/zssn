@@ -29,6 +29,7 @@ const Container = styled.div`
 const Panel = styled.section`
   width: 40rem;
   padding: 1rem;
+  overflow-y: auto;
 `
 
 const MapContainer = styled.section`
@@ -144,7 +145,7 @@ export default class DashboardPage extends Component {
             <Panel>
               <Header as="h2">
                 <ExitButton onClick={refetch} render={(onClick) => (
-                  <Button floated="right" basic onClick={onClick}><Icon name="power off" />Exit</Button>
+                  <Button floated="right" basic onClick={onClick}><Icon name="power off" />Logout</Button>
                 )} />
                 {survivor.name}
                 <Header.Subheader>{`${survivor.age} years old`}</Header.Subheader>

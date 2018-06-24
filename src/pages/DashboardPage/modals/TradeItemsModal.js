@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Button, Header, Dropdown, Grid, Segment, List, Input, Message } from 'semantic-ui-react'
+import { Modal, Button, Header, Dropdown, Grid, Segment, List, Input, Message, Label } from 'semantic-ui-react'
 import { PeopleContext } from 'contexts'
 import { toast } from 'react-toastify'
 import * as api from 'api'
@@ -7,7 +7,7 @@ import * as inventoryUtils from 'utils/inventoryUtils'
 
 const Item = ({quantity, value, onChange, icon, header, description}) => (
   <List.Item>
-    <List.Content floated="right" style={{width: '50%'}}>
+    <List.Content floated="right" style={{width: '40%'}}>
       <Input disabled={quantity === 0} value={value} onChange={onChange} fluid type="number" label={`/${quantity === undefined ? '-' : quantity}`} labelPosition="right" />
     </List.Content>
     <List.Icon name={icon} size="large" verticalAlign="middle" />
@@ -20,7 +20,14 @@ const Item = ({quantity, value, onChange, icon, header, description}) => (
 
 const Inventory = ({title, subtitle, items, inventory, onChange, valid, loading=false}) => (
   <React.Fragment>
-    <Header content={title} subheader={subtitle} />
+    <Header>
+      <Label color={valid ? 'green' : 'red'} style={{float: 'right'}}>
+        Points
+        <Label.Detail>{inventoryUtils.calculatePoints(items)}</Label.Detail>
+      </Label>
+      {title}
+      <Header.Subheader>{subtitle}</Header.Subheader>
+    </Header>
     <Segment attached loading={loading} color={valid ? 'green' : 'red'}>
       <List divided relaxed size="large">
         <Item icon="tint" header="Water" description="4 points" value={items.water} onChange={onChange("water")} quantity={inventory && inventory.water} />
@@ -34,6 +41,7 @@ const Inventory = ({title, subtitle, items, inventory, onChange, valid, loading=
 
 const initialState = {
   open: false,
+  working: false,
   opening: false,
   loading: false,
   recipientId: null,
@@ -84,13 +92,6 @@ export default class TradeItemsModal extends Component {
     })
   }
 
-  handleChange = (evt, {value}) => {
-    this.setState(() => ({
-      recipientId: value,
-      paymentItems: initialState.paymentItems
-    }), this.fetchInventory)
-  }
-
   validate = () => {
     const { inventory } = this.props
     const { pickItems, paymentItems, recipientInventory } = this.state
@@ -134,6 +135,7 @@ export default class TradeItemsModal extends Component {
 
     const recipient = people.find(person => person.id === recipientId)
 
+    this.setState(() => ({ working: true }))
     api.postTrade(survivor.id, {
       name: recipient.name,
       pick: inventoryUtils.toString(pickItems, true),
@@ -143,6 +145,13 @@ export default class TradeItemsModal extends Component {
       refetch()
       this.handleClose()
     })
+  }
+
+  handleChange = (evt, {value}) => {
+    this.setState(() => ({
+      recipientId: value,
+      paymentItems: initialState.paymentItems
+    }), this.fetchInventory)
   }
 
   handleOpen = () => this.setState(() => ({
@@ -158,7 +167,7 @@ export default class TradeItemsModal extends Component {
 
   render() {
     const { render, survivor, inventory } = this.props
-    const { errors, valid, recipientId, open, opening, loading, paymentItems, pickItems, recipientInventory } = this.state
+    const { working, errors, valid, recipientId, open, opening, loading, paymentItems, pickItems, recipientInventory } = this.state
 
     return (
       <PeopleContext.Consumer>
@@ -166,7 +175,7 @@ export default class TradeItemsModal extends Component {
           <Modal trigger={render(this.handleOpen)} closeIcon open={open} onClose={this.handleClose}>
             <Modal.Header>Trade items</Modal.Header>
             <Modal.Content>
-              <Grid columns="2">
+              <Grid columns="2" stackable>
                 <Grid.Column width="16">
                   <Header content="Recipient" subheader="Who are you trading with?" />
                   <Dropdown
@@ -212,7 +221,7 @@ export default class TradeItemsModal extends Component {
             </Modal.Content>
             <Modal.Actions>
               <Button negative onClick={this.handleClose}>Cancel</Button>
-              <Button disabled={!valid} positive icon="checkmark" labelPosition="right" content="Trade" onClick={this.onSubmit(people)} />
+              <Button disabled={!valid} loading={working} positive icon="checkmark" labelPosition="right" content="Trade" onClick={this.onSubmit(people)} />
             </Modal.Actions>
           </Modal>
         )}
