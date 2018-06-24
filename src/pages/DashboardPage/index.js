@@ -144,7 +144,7 @@ export default class DashboardPage extends Component {
             <Panel>
               <Header as="h2">
                 <ExitButton onClick={refetch} render={(onClick) => (
-                  <Button floated="right" basic onClick={onClick}><Icon name="power off" />Exit</Button>
+                  <Button floated="right" basic onClick={onClick}><Icon name="power off" />Logout</Button>
                 )} />
                 {survivor.name}
                 <Header.Subheader>{`${survivor.age} years old`}</Header.Subheader>

@@ -50,7 +50,7 @@ export default class ReportsSection extends Component {
         <div style={{height: '15rem', marginBottom: '1rem'}}>
           <ResponsiveContainer>
             <PieChart>
-              <Pie dataKey="value" data={chartData} label isAnimationActive={false}>
+              <Pie dataKey="value" data={chartData} label={({value}) => `${value}%`} isAnimationActive={false}>
                 <Cell key={`cell-0`} fill="#21ba45" />
                 <Cell key={`cell-1`} fill="#db2828" />
               </Pie>
