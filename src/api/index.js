@@ -16,7 +16,7 @@ export const postPerson = ({name, age, lonlat, items, gender}) => {
 export const patchPerson = (personId, {name, age, lonlat, gender}) => {
   const person = {name, age, lonlat, gender}
 
-  return axios.patch(`${API_URL}/api/people/${personId}.json`, {person})
+  return axios.patch(`${API_URL}/api/people/${personId}.json`, { person })
 }
 
 export const getReportAboutInfectedPoints = () => axios.get(`${API_URL}/api/report/infected_points.json`)
@@ -27,4 +27,9 @@ export const getReportAboutInfected = () => axios.get(`${API_URL}/api/report/inf
 
 export const postInfectionReport = ({survivorId, infectedId}) => {
   return axios.post(`${API_URL}/api/people/${survivorId}/report_infection.json`, { infected: infectedId })
+}
+
+export const postTrade = (survivorId, {name, pick, payment}) => {
+  const consumer = { name, pick, payment }
+  return axios.post(`${API_URL}/api/people/${survivorId}/properties/trade_item.json`, { consumer })
 }

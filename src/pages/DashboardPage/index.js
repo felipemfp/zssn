@@ -67,6 +67,23 @@ export default class DashboardPage extends Component {
       })
   }
 
+  refetchProperties = () => {
+    const { survivor } = this.state
+    api.getPersonProperties(survivor.id).then(({data}) => {
+      const inventory = data.reduce((items, property) => {
+        items[property.item.name.toLowerCase()] = property.quantity
+        return items
+      }, {
+        water: 0,
+        food: 0,
+        medication: 0,
+        ammunition: 0
+      })
+
+      this.setState(() => ({ inventory }))
+    })
+  }
+
   handleDragEnd = ({latLng}) => {
     const lat = latLng.lat()
     const lng = latLng.lng()
@@ -109,7 +126,7 @@ export default class DashboardPage extends Component {
       )
     }
 
-    const { survivor, openInfoWindow } = this.state
+    const { survivor, inventory, openInfoWindow } = this.state
 
     const position = survivor.lonlat
       ? lonlatUtils.fromString(survivor.lonlat)
@@ -133,16 +150,22 @@ export default class DashboardPage extends Component {
                 <Header.Subheader>{`${survivor.age} years old`}</Header.Subheader>
               </Header>
               <Divider />
-              <InventorySection items={this.state.inventory} />
+              <InventorySection items={inventory} />
               <Divider />
-              <ActionsSection survivor={survivor} />
+              <ActionsSection
+                refetch={this.refetchProperties}
+                survivor={survivor}
+                inventory={inventory}
+              />
               <Divider />
               <ReportsSection />
             </Panel>
             <MapContainer>
               <GoogleMap defaultCenter={position} defaultZoom={defaultZoom}>
                 <Marker defaultPosition={position} draggable={true} onDragEnd={this.handleDragEnd}>
-                  <InfoWindow><span>Drag to update current location</span></InfoWindow>
+                  <InfoWindow>
+                    <span>Drag to update current location</span>
+                  </InfoWindow>
                 </Marker>
 
                 {healthy.map(idx => (people[idx].id !== survivor.id && people[idx].lonlat) && (
