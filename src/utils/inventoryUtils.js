@@ -16,8 +16,11 @@ export const calculatePoints = (items) => {
   return  Object.keys(items).reduce((sum, key) => sum + (items[key] * ITEMS_POINT[key]), 0)
 }
 
-export const toString = (items) => {
-  return Object.keys(items).map(key => ITEMS_KEY[key] && `${ITEMS_KEY[key]}:${items[key]}`).join(';')
+export const toString = (items, ignoreZeros=false) => {
+  return Object.keys(items)
+    .filter(key => ITEMS_KEY[key] && (ignoreZeros ? items[key] > 0 : true))
+    .map(key => `${ITEMS_KEY[key]}:${items[key]}`)
+    .join(';')
 }
 
 export const fromString = (items) => {
