@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Button, Header, Dropdown, Grid, Segment, List, Input, Icon, Divider } from 'semantic-ui-react'
+import { Modal, Button, Header, Dropdown, Grid, Segment, List, Input, Message } from 'semantic-ui-react'
 import { PeopleContext } from 'contexts'
 import { toast } from 'react-toastify'
 import * as api from 'api'
@@ -50,7 +50,8 @@ const initialState = {
     food: 0,
     ammunition: 0,
     medication: 0
-  }
+  },
+  errors: []
 }
 
 export default class TradeItemsModal extends Component {
@@ -93,17 +94,27 @@ export default class TradeItemsModal extends Component {
   validate = () => {
     const { inventory } = this.props
     const { pickItems, paymentItems, recipientInventory } = this.state
+    const errors = []
 
     const validateInventory = (inventory, items) =>
       Object.keys(inventory)
-        .reduce((valid, key) => items[key] < inventory[key] && valid, true)
+        .reduce((valid, key) => (inventory[key] === 0 || items[key] < inventory[key]) && valid, true)
 
     const hasSamePoints = inventoryUtils.calculatePoints(pickItems) === inventoryUtils.calculatePoints(paymentItems)
     const pickHasValidValues = validateInventory(inventory, pickItems)
     const paymentHasValidValues = validateInventory(recipientInventory, paymentItems)
 
+    if (!hasSamePoints) {
+      errors.push('A transaction can only go through if the points of the traded items are the same')
+    }
+
+    if (!pickHasValidValues || !paymentHasValidValues) {
+      errors.push('A transaction can not empty a resource of any of the participants.')
+    }
+
     this.setState(() => ({
-      valid: hasSamePoints && pickHasValidValues && paymentHasValidValues
+      valid: hasSamePoints && pickHasValidValues && paymentHasValidValues,
+      errors
     }))
   }
 
@@ -147,7 +158,7 @@ export default class TradeItemsModal extends Component {
 
   render() {
     const { render, survivor, inventory } = this.props
-    const { valid, recipientId, open, opening, loading, paymentItems, pickItems, recipientInventory } = this.state
+    const { errors, valid, recipientId, open, opening, loading, paymentItems, pickItems, recipientInventory } = this.state
 
     return (
       <PeopleContext.Consumer>
@@ -197,6 +208,7 @@ export default class TradeItemsModal extends Component {
                   />
                 </Grid.Column>
               </Grid>
+              {errors.length > 0 && <Message negative header="Transaction observations" list={errors} />}
             </Modal.Content>
             <Modal.Actions>
               <Button negative onClick={this.handleClose}>Cancel</Button>
