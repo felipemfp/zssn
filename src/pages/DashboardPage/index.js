@@ -29,6 +29,7 @@ const Container = styled.div`
 const Panel = styled.section`
   width: 40rem;
   padding: 1rem;
+  overflow-y: auto;
 `
 
 const MapContainer = styled.section`

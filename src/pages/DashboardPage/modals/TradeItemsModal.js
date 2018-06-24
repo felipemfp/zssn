@@ -7,7 +7,7 @@ import * as inventoryUtils from 'utils/inventoryUtils'
 
 const Item = ({quantity, value, onChange, icon, header, description}) => (
   <List.Item>
-    <List.Content floated="right" style={{width: '50%'}}>
+    <List.Content floated="right" style={{width: '40%'}}>
       <Input disabled={quantity === 0} value={value} onChange={onChange} fluid type="number" label={`/${quantity === undefined ? '-' : quantity}`} labelPosition="right" />
     </List.Content>
     <List.Icon name={icon} size="large" verticalAlign="middle" />
@@ -175,7 +175,7 @@ export default class TradeItemsModal extends Component {
           <Modal trigger={render(this.handleOpen)} closeIcon open={open} onClose={this.handleClose}>
             <Modal.Header>Trade items</Modal.Header>
             <Modal.Content>
-              <Grid columns="2">
+              <Grid columns="2" stackable>
                 <Grid.Column width="16">
                   <Header content="Recipient" subheader="Who are you trading with?" />
                   <Dropdown

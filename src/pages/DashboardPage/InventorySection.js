@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import * as inventoryUtils from 'utils/inventoryUtils'
 
 const Container = styled.div`
+  margin-top: 1.5rem;
   display: flex;
   justify-content: space-around;
 `
