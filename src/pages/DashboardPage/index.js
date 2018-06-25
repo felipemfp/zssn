@@ -18,7 +18,7 @@ import ActionsSection from './ActionsSection'
 import ReportsSection from './ReportsSection'
 import ExitButton from 'components/ExitButton'
 
-import { NATAL_LAT_LNG } from 'utils/constants'
+import { INITIAL_LAT_LNG } from 'utils/constants'
 
 const Container = styled.div`
   height: 100vh;
@@ -115,7 +115,7 @@ export default class DashboardPage extends Component {
 
     const position = survivor.lonlat
       ? lonlatUtils.fromString(survivor.lonlat)
-      : NATAL_LAT_LNG
+      : INITIAL_LAT_LNG()
 
     const defaultZoom = survivor.lonlat
       ? 15
