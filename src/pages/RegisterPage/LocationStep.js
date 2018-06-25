@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Marker, InfoWindow } from 'react-google-maps'
 
 import * as lonlatUtils from 'utils/lonlatUtils'
-import { NATAL_LAT_LNG } from 'utils/constants'
+import { INITIAL_LAT_LNG } from 'utils/constants'
 import GoogleMap from 'components/GoogleMap'
 
 export default class LocationStep extends Component {
@@ -20,7 +20,7 @@ export default class LocationStep extends Component {
     const defaultZoom = location ? 15 : 10
     const position = location
       ? lonlatUtils.fromString(this.props.location)
-      : NATAL_LAT_LNG
+      : INITIAL_LAT_LNG()
 
     return (
       <div style={{height: '300px'}}>

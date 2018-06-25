@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Marker, InfoWindow } from 'react-google-maps'
 import { ToastContainer, toast } from 'react-toastify'
 import * as lonlatUtils from 'utils/lonlatUtils'
+import * as inventoryUtils from 'utils/inventoryUtils'
 import * as api from 'api'
 
 import { PeopleContext } from 'contexts'
@@ -17,7 +18,7 @@ import ActionsSection from './ActionsSection'
 import ReportsSection from './ReportsSection'
 import ExitButton from 'components/ExitButton'
 
-import { NATAL_LAT_LNG } from 'utils/constants'
+import { INITIAL_LAT_LNG } from 'utils/constants'
 
 const Container = styled.div`
   height: 100vh;
@@ -50,15 +51,7 @@ export default class DashboardPage extends Component {
     this.setState(() => ({ loading: true }))
     Promise.all([api.getPerson(survivorId), api.getPersonProperties(survivorId)])
       .then(([{data: person}, {data: properties}]) => {
-        const inventory = properties.reduce((items, property) => {
-          items[property.item.name.toLowerCase()] = property.quantity
-          return items
-        }, {
-          water: 0,
-          food: 0,
-          medication: 0,
-          ammunition: 0
-        })
+        const inventory = inventoryUtils.parseProperties(properties)
 
         this.setState(() => ({
           loading: false,
@@ -71,16 +64,7 @@ export default class DashboardPage extends Component {
   refetchProperties = () => {
     const { survivor } = this.state
     api.getPersonProperties(survivor.id).then(({data}) => {
-      const inventory = data.reduce((items, property) => {
-        items[property.item.name.toLowerCase()] = property.quantity
-        return items
-      }, {
-        water: 0,
-        food: 0,
-        medication: 0,
-        ammunition: 0
-      })
-
+      const inventory = inventoryUtils.parseProperties(data)
       this.setState(() => ({ inventory }))
     })
   }
@@ -131,7 +115,7 @@ export default class DashboardPage extends Component {
 
     const position = survivor.lonlat
       ? lonlatUtils.fromString(survivor.lonlat)
-      : NATAL_LAT_LNG
+      : INITIAL_LAT_LNG()
 
     const defaultZoom = survivor.lonlat
       ? 15
@@ -139,7 +123,7 @@ export default class DashboardPage extends Component {
 
     return (
       <PeopleContext.Consumer>
-        {({people, healthy, infected, refetch}) => (
+        {({people, refetch}) => (
           <Container>
             <ToastContainer autoClose={3000} />
             <Panel>
@@ -169,24 +153,14 @@ export default class DashboardPage extends Component {
                   </InfoWindow>
                 </Marker>
 
-                {healthy.map(idx => (people[idx].id !== survivor.id && people[idx].lonlat) && (
+                {people.map(person => (person.id !== survivor.id && person.lonlat) && (
                   <PersonMarker
-                    key={idx}
-                    person={people[idx]}
-                    position={lonlatUtils.fromString(people[idx].lonlat)}
-                    infoWindowOpen={openInfoWindow[people[idx].id]}
-                    onToggle={this.handleToggleInfoWindow(people[idx].id)}
-                  />
-                ))}
-
-                {infected.map(idx => people[idx].lonlat && (
-                  <PersonMarker
-                    key={idx}
-                    person={people[idx]}
-                    position={lonlatUtils.fromString(people[idx].lonlat)}
-                    infected={true}
-                    infoWindowOpen={openInfoWindow[people[idx].id]}
-                    onToggle={this.handleToggleInfoWindow(people[idx].id)}
+                    key={person.id}
+                    person={person}
+                    infected={person.isInfected}
+                    position={lonlatUtils.fromString(person.lonlat)}
+                    infoWindowOpen={openInfoWindow[person.id]}
+                    onToggle={this.handleToggleInfoWindow(person.id)}
                   />
                 ))}
               </GoogleMap>

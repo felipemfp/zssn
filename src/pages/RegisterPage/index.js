@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Segment, Step, Button, Icon, Message } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
-
+import PublicLayout from 'containers/PublicLayout'
 import * as api from 'api'
 
 import { PeopleContext } from 'contexts'
@@ -14,24 +14,6 @@ import LocationStep from './LocationStep'
 const PERSONAL_INFORMATION_STEP = 'PERSONAL_INFORMATION_STEP'
 const INVENTORY_STEP = 'INVENTORY_STEP'
 const LOCATION_STEP = 'LOCATION_STEP'
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #f5f5f5;
-`
-
-const Panel = styled(Segment)`
-  padding: 2rem !important;
-`
-
-const ActionSection = styled.section`
-  margin-top: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-`
 
 export default class RegisterPage extends Component {
   state = {
@@ -188,10 +170,10 @@ export default class RegisterPage extends Component {
     }
 
     return (
-      <Container>
+      <PublicLayout>
         <PeopleContext.Consumer>
           {({refetch}) => (
-            <Panel>
+            <React.Fragment>
               <h1>Register new survivor</h1>
 
               {this.renderSteps()}
@@ -200,7 +182,7 @@ export default class RegisterPage extends Component {
 
               {this.renderCurrentStep()}
 
-              <ActionSection>
+              <PublicLayout.Footer>
                 {step === PERSONAL_INFORMATION_STEP
                     ? <Link to="/welcome" className="ui button">Cancel</Link>
                     : <Button onClick={this.onBack}>Back</Button>
@@ -208,11 +190,11 @@ export default class RegisterPage extends Component {
                 <Button primary loading={loading} onClick={this.onNext(refetch)}>
                   {step === INVENTORY_STEP ? 'Register' : 'Next'}
                 </Button>
-              </ActionSection>
-            </Panel>
+              </PublicLayout.Footer>
+            </React.Fragment>
           )}
         </PeopleContext.Consumer>
-      </Container>
+      </PublicLayout>
     )
   }
 }

@@ -4,21 +4,11 @@ import { PeopleContext } from 'contexts'
 import { toast } from 'react-toastify'
 import * as api from 'api'
 import * as inventoryUtils from 'utils/inventoryUtils'
+import InventoryList from 'components/InventoryList'
+import PersonSelect from 'components/PersonSelect'
 
-const Item = ({quantity, value, onChange, icon, header, description}) => (
-  <List.Item>
-    <List.Content floated="right" style={{width: '40%'}}>
-      <Input disabled={quantity === 0} value={value} onChange={onChange} fluid type="number" label={`/${quantity === undefined ? '-' : quantity}`} labelPosition="right" />
-    </List.Content>
-    <List.Icon name={icon} size="large" verticalAlign="middle" />
-    <List.Content>
-      <List.Header>{header}</List.Header>
-      <List.Description>{description}</List.Description>
-    </List.Content>
-  </List.Item>
-)
 
-const Inventory = ({title, subtitle, items, inventory, onChange, valid, loading=false}) => (
+const InventorySection = ({title, subtitle, items, inventory, onChange, valid, loading=false}) => (
   <React.Fragment>
     <Header>
       <Label color={valid ? 'green' : 'red'} style={{float: 'right'}}>
@@ -29,12 +19,14 @@ const Inventory = ({title, subtitle, items, inventory, onChange, valid, loading=
       <Header.Subheader>{subtitle}</Header.Subheader>
     </Header>
     <Segment attached loading={loading} color={valid ? 'green' : 'red'}>
-      <List divided relaxed size="large">
-        <Item icon="tint" header="Water" description="4 points" value={items.water} onChange={onChange("water")} quantity={inventory && inventory.water} />
-        <Item icon="food" header="Food" description="3 points" value={items.food} onChange={onChange("food")} quantity={inventory && inventory.food} />
-        <Item icon="medkit" header="Medication" description="2 points" value={items.medication} onChange={onChange("medication")} quantity={inventory && inventory.medication} />
-        <Item icon="crosshairs" header="Ammunition" description="1 point" value={items.ammunition} onChange={onChange("ammunition")} quantity={inventory && inventory.ammunition} />
-      </List>
+      <InventoryList
+        inventory={inventory}
+        items={items}
+        onWaterChange={onChange('water')}
+        onFoodChange={onChange('food')}
+        onMedicationChange={onChange('medication')}
+        onAmmunitionChange={onChange('ammunition')}
+      />
     </Segment>
   </React.Fragment>
 )
@@ -61,7 +53,6 @@ const initialState = {
   },
   errors: []
 }
-
 export default class TradeItemsModal extends Component {
   state = {
     ...initialState
@@ -75,15 +66,7 @@ export default class TradeItemsModal extends Component {
     }))
 
     api.getPersonProperties(recipientId).then(({data}) => {
-      const inventory = data.reduce((items, property) => {
-        items[property.item.name.toLowerCase()] = property.quantity
-        return items
-      }, {
-        water: 0,
-        food: 0,
-        medication: 0,
-        ammunition: 0
-      })
+      const inventory = inventoryUtils.parseProperties(data)
 
       this.setState(() => ({
         loading: false,
@@ -178,25 +161,17 @@ export default class TradeItemsModal extends Component {
               <Grid columns="2" stackable>
                 <Grid.Column width="16">
                   <Header content="Recipient" subheader="Who are you trading with?" />
-                  <Dropdown
-                    className="large"
+                  <PersonSelect
+                    size="large"
                     placeholder="Select a recipient"
-                    fluid
-                    search
-                    selection
                     loading={opening || people.length === 0}
-                    options={opening ? [] : healthy.filter(idx => people[idx].id !== survivor.id).map(idx => ({
-                      key: people[idx].id,
-                      text: people[idx].name,
-                      value: people[idx].id,
-                      content: <Header content={people[idx].name} subheader={`${people[idx].age} years old`} />
-                    }))}
+                    people={opening ? [] : healthy.filter(idx => people[idx].id !== survivor.id).map(idx => people[idx])}
                     value={recipientId}
                     onChange={this.handleChange}
                   />
                 </Grid.Column>
                 <Grid.Column>
-                  <Inventory
+                  <InventorySection
                     valid={valid}
                     items={pickItems}
                     title="Wanted items"
@@ -206,7 +181,7 @@ export default class TradeItemsModal extends Component {
                   />
                 </Grid.Column>
                 <Grid.Column>
-                  <Inventory
+                  <InventorySection
                     valid={valid}
                     loading={loading}
                     items={paymentItems}

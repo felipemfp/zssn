@@ -1,7 +1,8 @@
 import React from 'react'
 import { compose, withProps } from 'recompose'
 import { withGoogleMap, withScriptjs, GoogleMap } from 'react-google-maps'
-import { GOOGLE_MAPS_API_KEY } from 'utils/constants'
+import { GOOGLE_MAPS_API_KEY, INITIAL_LAT_LNG } from 'utils/constants'
+
 import mapStyles from 'mapStyles.json'
 
 export default compose(
@@ -17,7 +18,7 @@ export default compose(
   return (
     <GoogleMap
       defaultZoom={props.defaultZoom || 8}
-      defaultCenter={props.defaultCenter || { lat: -34.397, lng: 150.644 }}
+      defaultCenter={props.defaultCenter || INITIAL_LAT_LNG()}
       defaultOptions={{styles: mapStyles}}
       {...props}
     >

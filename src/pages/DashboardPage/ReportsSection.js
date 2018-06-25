@@ -59,10 +59,10 @@ export default class ReportsSection extends Component {
           </ResponsiveContainer>
         </div>
 
-        <Statistic.Group size="small" widths="two">
+        <Statistic.Group size="small" widths="two" style={{justifyContent: 'center'}}>
           <Popup content={infectedPointsReport['description']} basic trigger={
             <Statistic color='red' label='Points lost' value={infectedPointsReport['total_points_lost']} />
-          }/>
+          } />
           <Popup content={peopleInventoryReport['description']} basic trigger={
             <Statistic label='Items per survivor' value={Math.round(peopleInventoryReport['average_items_quantity_per_healthy_person'])} />
           } />
