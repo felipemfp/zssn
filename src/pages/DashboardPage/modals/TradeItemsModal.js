@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import { Modal, Button, Header, Dropdown, Grid, Segment, List, Input, Message, Label } from 'semantic-ui-react'
-import { PeopleContext } from 'contexts'
+import { Modal, Button, Header, Grid, Segment, Message, Label } from 'semantic-ui-react'
 import { toast } from 'react-toastify'
+
 import * as api from 'api'
 import * as inventoryUtils from 'utils/inventoryUtils'
+
+import { PeopleContext } from 'contexts'
+
 import InventoryList from 'components/InventoryList'
 import PersonSelect from 'components/PersonSelect'
 

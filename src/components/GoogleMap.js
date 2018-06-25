@@ -1,6 +1,7 @@
 import React from 'react'
 import { compose, withProps } from 'recompose'
 import { withGoogleMap, withScriptjs, GoogleMap } from 'react-google-maps'
+
 import { GOOGLE_MAPS_API_KEY, INITIAL_LAT_LNG } from 'utils/constants'
 
 import mapStyles from 'mapStyles.json'

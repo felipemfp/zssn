@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
-import { Segment, Step, Button, Icon, Message } from 'semantic-ui-react'
+import { Step, Button, Icon, Message } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
+
 import PublicLayout from 'containers/PublicLayout'
+
 import * as api from 'api'
 
 import { PeopleContext } from 'contexts'

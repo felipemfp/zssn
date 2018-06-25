@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Marker, InfoWindow } from 'react-google-maps'
 import { ToastContainer, toast } from 'react-toastify'
+import { Loader, Icon, Header, Divider, Button } from 'semantic-ui-react'
+
 import * as lonlatUtils from 'utils/lonlatUtils'
 import * as inventoryUtils from 'utils/inventoryUtils'
 import * as api from 'api'
@@ -10,8 +12,6 @@ import { PeopleContext } from 'contexts'
 
 import GoogleMap from 'components/GoogleMap'
 import PersonMarker from 'components/PersonMarker'
-
-import { Loader, Icon, Header, Divider, Button } from 'semantic-ui-react'
 
 import InventorySection from './InventorySection'
 import ActionsSection from './ActionsSection'

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
-import { Dropdown, Header } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import PublicLayout from 'containers/PublicLayout'
+
 import { PeopleContext } from 'contexts'
+
+import PublicLayout from 'containers/PublicLayout'
 import PersonSelect from 'components/PersonSelect'
 
 export default class WelcomePage extends Component {

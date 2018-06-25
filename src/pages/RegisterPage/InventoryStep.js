@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 import * as inventoryUtils from 'utils/inventoryUtils'
 
 import InventoryList from 'components/InventoryList'

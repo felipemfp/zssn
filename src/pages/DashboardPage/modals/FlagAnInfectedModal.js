@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { Modal, Button, Header, Dropdown } from 'semantic-ui-react'
-import { PeopleContext } from 'contexts'
+import { Modal, Button } from 'semantic-ui-react'
 import { toast } from 'react-toastify'
+
+import { PeopleContext } from 'contexts'
+
 import * as api from 'api'
+
 import PersonSelect from 'components/PersonSelect'
 
 export default class FlagAnInfectedModal extends Component {
