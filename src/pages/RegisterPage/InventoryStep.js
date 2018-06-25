@@ -1,19 +1,7 @@
 import React, { Component } from 'react'
-import  { List, Input } from 'semantic-ui-react'
 import * as inventoryUtils from 'utils/inventoryUtils'
 
-const Item = (props) => (
-  <List.Item>
-    <List.Content floated="right" style={{width: '40%'}}>
-      <Input fluid value={props.value} onChange={props.onChange} type="number" size="large" />
-    </List.Content>
-    <List.Icon name={props.icon} size='large' verticalAlign='middle' />
-    <List.Content>
-      <List.Header>{props.header}</List.Header>
-      <List.Description>{props.description}</List.Description>
-    </List.Content>
-  </List.Item>
-)
+import InventoryList from 'components/InventoryList'
 
 export default class InventoryStep extends Component {
   state = {
@@ -31,12 +19,13 @@ export default class InventoryStep extends Component {
 
   render() {
     return (
-      <List divided relaxed size="large">
-        <Item icon="tint" header="Water" description="4 points" value={this.state.water} onChange={this.onChange("water")} />
-        <Item icon="food" header="Food" description="3 points" value={this.state.food} onChange={this.onChange("food")} />
-        <Item icon="medkit" header="Medication" description="2 points" value={this.state.medication} onChange={this.onChange("medication")} />
-        <Item icon="crosshairs" header="Ammunition" description="1 point" value={this.state.ammunition} onChange={this.onChange("ammunition")} />
-      </List>
+      <InventoryList
+        items={this.state}
+        onWaterChange={this.onChange('water')}
+        onFoodChange={this.onChange('food')}
+        onMedicationChange={this.onChange('medication')}
+        onAmmunitionChange={this.onChange('ammunition')}
+      />
     )
   }
 }

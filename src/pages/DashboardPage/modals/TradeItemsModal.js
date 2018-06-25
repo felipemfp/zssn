@@ -4,21 +4,10 @@ import { PeopleContext } from 'contexts'
 import { toast } from 'react-toastify'
 import * as api from 'api'
 import * as inventoryUtils from 'utils/inventoryUtils'
+import InventoryList from 'components/InventoryList'
 
-const Item = ({quantity, value, onChange, icon, header, description}) => (
-  <List.Item>
-    <List.Content floated="right" style={{width: '40%'}}>
-      <Input disabled={quantity === 0} value={value} onChange={onChange} fluid type="number" label={`/${quantity === undefined ? '-' : quantity}`} labelPosition="right" />
-    </List.Content>
-    <List.Icon name={icon} size="large" verticalAlign="middle" />
-    <List.Content>
-      <List.Header>{header}</List.Header>
-      <List.Description>{description}</List.Description>
-    </List.Content>
-  </List.Item>
-)
 
-const Inventory = ({title, subtitle, items, inventory, onChange, valid, loading=false}) => (
+const InventorySection = ({title, subtitle, items, inventory, onChange, valid, loading=false}) => (
   <React.Fragment>
     <Header>
       <Label color={valid ? 'green' : 'red'} style={{float: 'right'}}>
@@ -29,12 +18,14 @@ const Inventory = ({title, subtitle, items, inventory, onChange, valid, loading=
       <Header.Subheader>{subtitle}</Header.Subheader>
     </Header>
     <Segment attached loading={loading} color={valid ? 'green' : 'red'}>
-      <List divided relaxed size="large">
-        <Item icon="tint" header="Water" description="4 points" value={items.water} onChange={onChange("water")} quantity={inventory && inventory.water} />
-        <Item icon="food" header="Food" description="3 points" value={items.food} onChange={onChange("food")} quantity={inventory && inventory.food} />
-        <Item icon="medkit" header="Medication" description="2 points" value={items.medication} onChange={onChange("medication")} quantity={inventory && inventory.medication} />
-        <Item icon="crosshairs" header="Ammunition" description="1 point" value={items.ammunition} onChange={onChange("ammunition")} quantity={inventory && inventory.ammunition} />
-      </List>
+      <InventoryList
+        inventory={inventory}
+        items={items}
+        onWaterChange={onChange('water')}
+        onFoodChange={onChange('food')}
+        onMedicationChange={onChange('medication')}
+        onAmmunitionChange={onChange('ammunition')}
+      />
     </Segment>
   </React.Fragment>
 )
@@ -61,7 +52,6 @@ const initialState = {
   },
   errors: []
 }
-
 export default class TradeItemsModal extends Component {
   state = {
     ...initialState
@@ -188,7 +178,7 @@ export default class TradeItemsModal extends Component {
                   />
                 </Grid.Column>
                 <Grid.Column>
-                  <Inventory
+                  <InventorySection
                     valid={valid}
                     items={pickItems}
                     title="Wanted items"
@@ -198,7 +188,7 @@ export default class TradeItemsModal extends Component {
                   />
                 </Grid.Column>
                 <Grid.Column>
-                  <Inventory
+                  <InventorySection
                     valid={valid}
                     loading={loading}
                     items={paymentItems}
