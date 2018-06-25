@@ -1,43 +1,26 @@
 import React from 'react'
 import { List } from 'semantic-ui-react'
-
+import { ITEMS_NAME, ITEMS_ICON, ITEMS_POINT } from 'utils/inventoryUtils'
 import InventoryItem from './InventoryItem'
 
 const InventoryList = ({items, onWaterChange, onFoodChange, onMedicationChange, onAmmunitionChange, inventory=null, size='large'}) => {
+  const renderItem = (key, onChange) => (
+    <InventoryItem
+      icon={ITEMS_ICON[key]}
+      header={ITEMS_NAME[key]}
+      description={`${ITEMS_POINT[key]} point${ITEMS_POINT[key] > 1 ? 's' : ''}`}
+      quantity={inventory ? inventory[key] : false}
+      value={items[key]}
+      onChange={onChange}
+    />
+  )
+
   return (
     <List divided relaxed size={size}>
-      <InventoryItem
-        icon="tint"
-        header="Water"
-        description="4 points"
-        quantity={inventory ? inventory.water : false}
-        value={items.water}
-        onChange={onWaterChange}
-      />
-      <InventoryItem
-        icon="food"
-        header="Food"
-        description="3 points"
-        quantity={inventory ? inventory.food : false}
-        value={items.food}
-        onChange={onFoodChange}
-      />
-      <InventoryItem
-        icon="medkit"
-        header="Medication"
-        description="2 points"
-        quantity={inventory ? inventory.medication : false}
-        value={items.medication}
-        onChange={onMedicationChange}
-      />
-      <InventoryItem
-        icon="crosshairs"
-        header="Ammunition"
-        description="1 point"
-        quantity={inventory ? inventory.ammunition : false}
-        value={items.ammunition}
-        onChange={onAmmunitionChange}
-      />
+      {renderItem('water', onWaterChange)}
+      {renderItem('food', onFoodChange)}
+      {renderItem('medication', onMedicationChange)}
+      {renderItem('ammunition', onAmmunitionChange)}
     </List>
   )
 }

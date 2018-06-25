@@ -10,15 +10,15 @@ const Container = styled.div`
   justify-content: space-around;
 `
 
-const Item = ({icon, name, value}) => (
+const Item = ({name, value}) => (
   <section>
-    <Popup content={name} position="bottom left" trigger={(
+    <Popup content={inventoryUtils.ITEMS_NAME[name]} position="bottom left" trigger={(
     <Segment compact>
       <Header icon style={{margin: 0}}>
         <Label color='red' floating>
           {value}
         </Label>
-        <Icon name={icon} style={{margin: '0 auto'}} />
+        <Icon name={inventoryUtils.ITEMS_ICON[name]} style={{margin: '0 auto'}} />
       </Header>
     </Segment>
     )}/>
@@ -37,10 +37,10 @@ const InventorySection = ({items}) => {
       </h3>
 
       <Container>
-        <Item icon="tint" name="Water" value={items.water || 0} />
-        <Item icon="food" name="Food" value={items.food || 0} />
-        <Item icon="medkit" name="Medication" value={items.medication || 0} />
-        <Item icon="crosshairs" name="Ammunition" value={items.ammunition || 0} />
+        <Item name="water" value={items.water || 0} />
+        <Item name="food" value={items.food || 0} />
+        <Item name="medication" value={items.medication || 0} />
+        <Item name="ammunition" value={items.ammunition || 0} />
       </Container>
     </section>
   )

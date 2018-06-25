@@ -1,11 +1,18 @@
-const ITEMS_KEY = {
+export const ITEMS_NAME = {
   water: 'Water',
   food: 'Food',
   medication: 'Medication',
   ammunition: 'Ammunition'
 }
 
-const ITEMS_POINT = {
+export const ITEMS_ICON = {
+  water: 'tint',
+  food: 'food',
+  medication: 'medkit',
+  ammunition: 'bomb'
+}
+
+export const ITEMS_POINT = {
   water: 4,
   food: 3,
   medication: 2,
@@ -18,15 +25,15 @@ export const calculatePoints = (items) => {
 
 export const toString = (items, ignoreZeros=false) => {
   return Object.keys(items)
-    .filter(key => ITEMS_KEY[key] && (ignoreZeros ? items[key] > 0 : true))
-    .map(key => `${ITEMS_KEY[key]}:${items[key]}`)
+    .filter(key => ITEMS_NAME[key] && (ignoreZeros ? items[key] > 0 : true))
+    .map(key => `${ITEMS_NAME[key]}:${items[key]}`)
     .join(';')
 }
 
 export const fromString = (items) => {
     return items.split(';').reduce((result, item) => {
       const [key, value] = item.split(':')
-      if (ITEMS_KEY[key.toLowerCase()]) {
+      if (ITEMS_NAME[key.toLowerCase()]) {
         result[key.toLowerCase()] += Number(value)
       }
       return result
