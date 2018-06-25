@@ -37,3 +37,13 @@ export const fromString = (items) => {
       ammunition: 0
     })
 }
+
+export const parseProperties = (properties) => properties.reduce((items, property) => {
+  items[property.item.name.toLowerCase()] = property.quantity
+  return items
+}, {
+  water: 0,
+  food: 0,
+  medication: 0,
+  ammunition: 0
+})

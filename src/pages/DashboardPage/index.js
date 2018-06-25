@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Marker, InfoWindow } from 'react-google-maps'
 import { ToastContainer, toast } from 'react-toastify'
 import * as lonlatUtils from 'utils/lonlatUtils'
+import * as inventoryUtils from 'utils/inventoryUtils'
 import * as api from 'api'
 
 import { PeopleContext } from 'contexts'
@@ -50,15 +51,7 @@ export default class DashboardPage extends Component {
     this.setState(() => ({ loading: true }))
     Promise.all([api.getPerson(survivorId), api.getPersonProperties(survivorId)])
       .then(([{data: person}, {data: properties}]) => {
-        const inventory = properties.reduce((items, property) => {
-          items[property.item.name.toLowerCase()] = property.quantity
-          return items
-        }, {
-          water: 0,
-          food: 0,
-          medication: 0,
-          ammunition: 0
-        })
+        const inventory = inventoryUtils.parseProperties(properties)
 
         this.setState(() => ({
           loading: false,
@@ -71,16 +64,7 @@ export default class DashboardPage extends Component {
   refetchProperties = () => {
     const { survivor } = this.state
     api.getPersonProperties(survivor.id).then(({data}) => {
-      const inventory = data.reduce((items, property) => {
-        items[property.item.name.toLowerCase()] = property.quantity
-        return items
-      }, {
-        water: 0,
-        food: 0,
-        medication: 0,
-        ammunition: 0
-      })
-
+      const inventory = inventoryUtils.parseProperties(data)
       this.setState(() => ({ inventory }))
     })
   }

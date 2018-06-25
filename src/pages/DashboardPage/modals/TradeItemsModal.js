@@ -75,15 +75,7 @@ export default class TradeItemsModal extends Component {
     }))
 
     api.getPersonProperties(recipientId).then(({data}) => {
-      const inventory = data.reduce((items, property) => {
-        items[property.item.name.toLowerCase()] = property.quantity
-        return items
-      }, {
-        water: 0,
-        food: 0,
-        medication: 0,
-        ammunition: 0
-      })
+      const inventory = inventoryUtils.parseProperties(data)
 
       this.setState(() => ({
         loading: false,
