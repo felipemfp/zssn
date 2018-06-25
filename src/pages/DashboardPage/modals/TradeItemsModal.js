@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import * as api from 'api'
 import * as inventoryUtils from 'utils/inventoryUtils'
 import InventoryList from 'components/InventoryList'
+import PersonSelect from 'components/PersonSelect'
 
 
 const InventorySection = ({title, subtitle, items, inventory, onChange, valid, loading=false}) => (
@@ -160,19 +161,11 @@ export default class TradeItemsModal extends Component {
               <Grid columns="2" stackable>
                 <Grid.Column width="16">
                   <Header content="Recipient" subheader="Who are you trading with?" />
-                  <Dropdown
-                    className="large"
+                  <PersonSelect
+                    size="large"
                     placeholder="Select a recipient"
-                    fluid
-                    search
-                    selection
                     loading={opening || people.length === 0}
-                    options={opening ? [] : healthy.filter(idx => people[idx].id !== survivor.id).map(idx => ({
-                      key: people[idx].id,
-                      text: people[idx].name,
-                      value: people[idx].id,
-                      content: <Header content={people[idx].name} subheader={`${people[idx].age} years old`} />
-                    }))}
+                    people={opening ? [] : healthy.filter(idx => people[idx].id !== survivor.id).map(idx => people[idx])}
                     value={recipientId}
                     onChange={this.handleChange}
                   />

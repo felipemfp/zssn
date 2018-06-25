@@ -3,11 +3,13 @@ import { Modal, Button, Header, Dropdown } from 'semantic-ui-react'
 import { PeopleContext } from 'contexts'
 import { toast } from 'react-toastify'
 import * as api from 'api'
+import PersonSelect from 'components/PersonSelect'
 
 export default class FlagAnInfectedModal extends Component {
   state = {
     open: false,
     opening: false,
+    loading: false,
     infectedId: null
   }
 
@@ -21,6 +23,7 @@ export default class FlagAnInfectedModal extends Component {
     const { infectedId } = this.state
     const { survivor } = this.props
 
+    this.setState(() => ({loading: true}))
     api.postInfectionReport({
       survivorId: survivor.id,
       infectedId
@@ -45,7 +48,7 @@ export default class FlagAnInfectedModal extends Component {
 
   render() {
     const { render } = this.props
-    const { infectedId, open, opening } = this.state
+    const { infectedId, open, opening, loading } = this.state
 
     return (
       <PeopleContext.Consumer>
@@ -53,26 +56,18 @@ export default class FlagAnInfectedModal extends Component {
           <Modal trigger={render(this.handleOpen)} size="mini" closeIcon open={open} onClose={this.handleClose}>
             <Modal.Header>Flag an infected</Modal.Header>
             <Modal.Content>
-              <Dropdown
-                className="big"
+              <PersonSelect
+                size="big"
                 placeholder="Select a survivor"
-                fluid
-                search
-                selection
                 loading={opening || people.length === 0}
-                options={opening ? [] : healthy.map(idx => ({
-                  key: people[idx].id,
-                  text: people[idx].name,
-                  value: people[idx].id,
-                  content: <Header content={people[idx].name} subheader={`${people[idx].age} years old`} />
-                }))}
+                people={opening ? [] : healthy.map(idx => people[idx])}
                 value={infectedId}
                 onChange={this.handleChange}
               />
             </Modal.Content>
             <Modal.Actions>
               <Button negative onClick={this.handleClose}>Cancel</Button>
-              <Button disabled={!infectedId} positive icon="checkmark" labelPosition="right" content="Flag" onClick={this.onSubmit(refetch)} />
+              <Button loading={loading} disabled={!infectedId} positive icon="checkmark" labelPosition="right" content="Flag" onClick={this.onSubmit(refetch)} />
             </Modal.Actions>
           </Modal>
         )}

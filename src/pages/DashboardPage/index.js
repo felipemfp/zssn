@@ -123,7 +123,7 @@ export default class DashboardPage extends Component {
 
     return (
       <PeopleContext.Consumer>
-        {({people, healthy, infected, refetch}) => (
+        {({people, refetch}) => (
           <Container>
             <ToastContainer autoClose={3000} />
             <Panel>
@@ -153,24 +153,14 @@ export default class DashboardPage extends Component {
                   </InfoWindow>
                 </Marker>
 
-                {healthy.map(idx => (people[idx].id !== survivor.id && people[idx].lonlat) && (
+                {people.map(person => (person.id !== survivor.id && person.lonlat) && (
                   <PersonMarker
-                    key={idx}
-                    person={people[idx]}
-                    position={lonlatUtils.fromString(people[idx].lonlat)}
-                    infoWindowOpen={openInfoWindow[people[idx].id]}
-                    onToggle={this.handleToggleInfoWindow(people[idx].id)}
-                  />
-                ))}
-
-                {infected.map(idx => people[idx].lonlat && (
-                  <PersonMarker
-                    key={idx}
-                    person={people[idx]}
-                    position={lonlatUtils.fromString(people[idx].lonlat)}
-                    infected={true}
-                    infoWindowOpen={openInfoWindow[people[idx].id]}
-                    onToggle={this.handleToggleInfoWindow(people[idx].id)}
+                    key={person.id}
+                    person={person}
+                    infected={person.isInfected}
+                    position={lonlatUtils.fromString(person.lonlat)}
+                    infoWindowOpen={openInfoWindow[person.id]}
+                    onToggle={this.handleToggleInfoWindow(person.id)}
                   />
                 ))}
               </GoogleMap>

@@ -4,6 +4,7 @@ import { Dropdown, Header } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import PublicLayout from 'containers/PublicLayout'
 import { PeopleContext } from 'contexts'
+import PersonSelect from 'components/PersonSelect'
 
 export default class WelcomePage extends Component {
   state = {}
@@ -23,19 +24,12 @@ export default class WelcomePage extends Component {
 
         <PeopleContext.Consumer>
           {({healthy, people}) => (
-            <Dropdown
-              className="massive"
+            <PersonSelect
               placeholder="Who you are?"
-              fluid
-              search
-              selection
               loading={people.length === 0}
-              options={healthy.map(idx => ({
-                key: people[idx].id,
-                text: people[idx].name,
-                value: people[idx].id,
-                content: <Header content={people[idx].name} subheader={`${people[idx].age} years old`} />
-              }))}
+              people={healthy.map(idx => people[idx])}
+              value={survivorId}
+              size="massive"
               onChange={this.handleChange}
             />
           )}
