@@ -1,6 +1,7 @@
 import React from 'react'
 import { Header } from 'semantic-ui-react'
 import { Marker, Circle, InfoWindow } from 'react-google-maps'
+
 import BonfireIcon from 'assets/bonfire.png'
 import SkullIcon from 'assets/skull.png'
 

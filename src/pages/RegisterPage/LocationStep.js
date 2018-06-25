@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import { Marker, InfoWindow } from 'react-google-maps'
 
 import * as lonlatUtils from 'utils/lonlatUtils'
-import { INITIAL_LAT_LNG } from 'utils/constants'
+
 import GoogleMap from 'components/GoogleMap'
+
+import { INITIAL_LAT_LNG } from 'utils/constants'
 
 export default class LocationStep extends Component {
   handleDragEnd = ({latLng}) => {

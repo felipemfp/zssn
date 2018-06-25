@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Statistic, Loader, Popup } from 'semantic-ui-react'
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
+
 import * as api from 'api'
 
 export default class ReportsSection extends Component {
